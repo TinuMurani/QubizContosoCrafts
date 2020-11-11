@@ -51,7 +51,7 @@ namespace ContosoCrafts.WebSite
                 .ForEach(repo => services.AddScoped(
                     GetType().Assembly.GetTypes()
                     .Where(type => type.IsInterface)
-                    .Where(type => type.Name.EndsWith(repo.Name)).First(), repo));
+                    .Where(type => type.Name.Equals($"I{repo.Name}")).First(), repo));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
