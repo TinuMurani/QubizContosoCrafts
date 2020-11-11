@@ -31,11 +31,27 @@ namespace ContosoCrafts.WebSite
         {
             services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DatabaseConnectionString")));
-            services.AddScoped<IProductRepository, ProductRepository>();
-            services.AddScoped<IRatingRepository, RatingRepository>();
+
+            AddScopedRepositories(services);
+
+            //services.AddScoped<IProductRepository, ProductRepository>();
+            //services.AddScoped<IRatingRepository, RatingRepository>();
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddControllers();
+        }
+
+        // Courtesy of Tim Corey
+        private void AddScopedRepositories(IServiceCollection services)
+        {
+            GetType().Assembly.GetTypes()
+                .Where(type => type.IsClass)
+                .Where(type => type.Name.EndsWith("Repository"))
+                .ToList()
+                .ForEach(repo => services.AddScoped(
+                    GetType().Assembly.GetTypes()
+                    .Where(type => type.IsInterface)
+                    .Where(type => type.Name.EndsWith(repo.Name)).First(), repo));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
