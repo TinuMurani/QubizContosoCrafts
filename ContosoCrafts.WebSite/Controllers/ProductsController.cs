@@ -6,15 +6,15 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using ContosoCrafts.WebSite.Models;
 using ContosoCrafts.WebSite.Repositories;
-using ContosoCrafts.WebSite.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.IO;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Data.SqlClient;
 
 namespace ContosoCrafts.WebSite.Controllers
 {
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class ProductsController : ControllerBase
     {
@@ -53,15 +53,94 @@ namespace ContosoCrafts.WebSite.Controllers
             return _productRepository.GetProducts();
         }
 
-        [HttpGet]
-        [Route("Rate")]
-        public ActionResult Get(
-            [FromQuery] int ProductId,
-            [FromQuery] int Rating)
+        [HttpGet("{id}")]
+        public Product GetProduct(int? id)
         {
-            _ratingRepository.AddRatingToProduct(ProductId, Rating);
+            if (_productRepository.GetProduct(id.Value) is null)
+            {
+                return new Product();
+            }
+
+            return _productRepository.GetProduct(id.Value);
+        }
+
+        [HttpPost]
+        public ActionResult PostProduct([Bind("Maker,Image,Url,Title,Description")] Product product)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            _productRepository.AddProduct(product);
 
             return Ok();
+        }
+
+        [HttpPut("{id}")]
+        public ActionResult UpdateProduct([Bind("Id,Maker,Image,Url,Title,Description")] Product product)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            try
+            {
+                _productRepository.UpdateProduct(product);
+            }
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
+
+            return Ok();
+        }
+
+        [HttpDelete("{id}")]
+        public ActionResult DeleteProduct(int? id)
+        {
+            if (_productRepository.GetProducts().ToList().Find(x => x.Id == id.Value) is null)
+            {
+                return BadRequest();
+            }
+
+            _productRepository.DeleteProduct(_productRepository.GetProduct(id.Value));
+
+            return Ok();
+        }
+
+        [HttpPost]
+        [Route("Rate")]
+        public ActionResult AddRating(int productId, int rating)
+        {
+            if (_productRepository.GetProduct(productId) is null)
+            {
+                return NotFound();
+            }
+
+            try
+            {
+                _ratingRepository.AddRatingToProduct(productId, rating);
+            }
+            catch (Exception ex)
+            {
+               return BadRequest(ex.Message);
+            }
+
+            return Ok();
+        }
+
+        [HttpGet]
+        [Route("Rate")]
+        public IEnumerable<Rating> GetRatingByProductId(int productId)
+        {
+            if (_productRepository.GetProduct(productId) is null)
+            {
+                return new List<Rating>();
+            }
+
+            return _ratingRepository.GetRatingsOfProduct(productId);
         }
     }
 }

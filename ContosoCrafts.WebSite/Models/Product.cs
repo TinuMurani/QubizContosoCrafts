@@ -11,7 +11,6 @@ namespace ContosoCrafts.WebSite.Models
         [Required]
         public string Maker { get; set; }
 
-        //[JsonPropertyName("img")]
         public string Image { get; set; }
         public string Url { get; set; }
         
@@ -20,7 +19,5 @@ namespace ContosoCrafts.WebSite.Models
 
         [MaxLength(500)]
         public string Description { get; set; }
-
-        //public override string ToString() => JsonSerializer.Serialize<Product>(this);
     }
 }

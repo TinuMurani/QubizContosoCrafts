@@ -5,7 +5,6 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using ContosoCrafts.WebSite.Models;
 using ContosoCrafts.WebSite.Repositories;
-using ContosoCrafts.WebSite.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -34,11 +33,11 @@ namespace ContosoCrafts.WebSite
 
             AddScopedRepositories(services);
 
-            //services.AddScoped<IProductRepository, ProductRepository>();
-            //services.AddScoped<IRatingRepository, RatingRepository>();
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddControllers();
+
+            services.AddSwaggerGen();
         }
 
         // Courtesy of Tim Corey
@@ -70,6 +69,16 @@ namespace ContosoCrafts.WebSite
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+
+            // Enable middleware to serve generated Swagger as a JSON endpoint.
+            app.UseSwagger();
+
+            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
+            // specifying the Swagger JSON endpoint.
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+            });
 
             app.UseRouting();
 

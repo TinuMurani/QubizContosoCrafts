@@ -11,6 +11,7 @@ namespace ContosoCrafts.WebSite
     {
         public DbSet<Product> Products { get; set; }
         public DbSet<Rating> Ratings { get; set; }
+        public DbSet<Stock> Stocks { get; set; }
 
         public AppDbContext(DbContextOptions options) : base(options)
         {

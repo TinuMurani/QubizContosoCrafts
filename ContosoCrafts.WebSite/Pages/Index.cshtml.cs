@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using ContosoCrafts.WebSite.Models;
 using ContosoCrafts.WebSite.Repositories;
-using ContosoCrafts.WebSite.Services;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 
@@ -16,16 +11,12 @@ namespace ContosoCrafts.WebSite.Pages
         private readonly ILogger<IndexModel> _logger;
         private readonly IProductRepository _productRepository;
 
-        //private readonly IJsonFileProductService _productService;
-
-        //public IJsonFileProductService ProductService;
         public IEnumerable<Product> Products { get; private set; }
 
-        public IndexModel(ILogger<IndexModel> logger, IProductRepository productRepository)//, IJsonFileProductService productService)
+        public IndexModel(ILogger<IndexModel> logger, IProductRepository productRepository)
         {
             _logger = logger;
             _productRepository = productRepository;
-            //_productService = productService;
         }
 
         public void OnGet()

@@ -23,8 +23,15 @@ namespace ContosoCrafts.WebSite.Repositories
 
         public void AddRatingToProduct(int productId, int rating)
         {
-            _appDbContext.Add(new Rating { ProductId = productId, ProductRating = rating });
-            _appDbContext.SaveChanges();
+            try
+            {
+                _appDbContext.Add(new Rating { ProductId = productId, ProductRating = rating });
+                _appDbContext.SaveChanges();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
     }
 }
